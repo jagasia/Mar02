@@ -1,0 +1,526 @@
+Map is a collection of collection
+Key, Value
+
+	Key is a Set
+
+map1.keySet()		returns Set (if the map is HashMap, then key is a HashSet)
+				    (if the map is TreeMap, then key is a TreeSet)
+
+map1.values()		returns the values alone as a Collection
+
+map1.entrySet()		returns the entries as a Set. Each element is Entry
+
+Collection Behavior
+	How Set reacts to duplicate values?	How Map reacts?
+	Where does the elements added when adding to i) List ii) Set
+
+
+Iteration Order
+	List		supports	Iterator, ListIterator
+	Set		supports	Iterator, DescendingIterator
+
+TreeSet		is derived from SortedSet	(we cannot create instance of SortedSet)
+	while using Iterator, the treeset iterates in (in-order) traversal
+		in-order traversal means?	left-root-right
+	while using DescendingIterator, we get reverse order
+
+
+
+Set interface
+	HashSet
+	TreeSet
+	LinkedHashSet
+
+		these classes are concrete classes
+	Lets see some abstract classes (Set)
+		SortedSet
+		NavigableSet
+
+
+
+------------------------------------------
+Queue		FIFO		first in first out
+Stack		LIFO		Last in First out
+
+
+
+LinkedList		implements Queue
+PriorityQueue
+	is not FIFO
+	
+
+TreeMap implements NavigableMap and SortedMap
+
+WeakHashMap
+EnumMap
+	the key is enum
+	EnumMap is a map, where the key is an enum
+
+import java.util.EnumMap;
+
+enum Days {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY}
+public class EnmMapDemo {
+
+	public static void main(String[] args) {
+		EnumMap<Days, Integer> map1=new EnumMap<>(Days.class);
+		map1.put(Days.MONDAY, 8);
+		map1.put(Days.WEDNESDAY, 10);
+		
+	}
+
+}
+
+
+
+-------------------------
+Reminder
+	Encryption
+	sending emails from java program
+
+------------
+Task:
+	we have created a single page application for employees. Now use Map to store the employee details. This helps us to find employee by id easily. 
+	employeeId is the key
+	employee object is the value
+	
+	The collection chosen is TreeMap
+	we provide display option in ascending / descending 	(DescendingIterator)
+
+1) Employee class	(model)	(implements Serializable)
+	EMP ID,Name,Type
+2) EmployeeDao class	(model)
+	dependency is TreeMap<Integer, Employee>
+	Create, Read, Update, Delete
+3) EmployeeMain		(view)
+	main method
+		1) Add Employee		(ask user to enter a CSV line)
+		2) Bulk add		ask how many records to be added. loop that many times and get csv to add
+		3) Modify EMployee 	by id
+		4) Remove Employee	by id
+		5) Display All Employee	in asc
+		6) --do--		in desc
+		7) Find Employee by Id	(accept employeeId and return Employee object)
+		8) Exit
+
+
+--------------------------------------------------------------
+Java 8 features
+---------------
+what's new in java 8 interfaces?
+	java 8 allows defining methods with body inside interfaces only if the methods are either
+		static
+		default
+
+Functional interfaces
+	an interface that has only 1 abstract method
+
+	What is new about that????	In old versions of java also, we created interfaces with 1 method
+
+Java 8 introduces an annotation called functional interface
+@FunctionalInterface 
+
+
+Why this annotation is needed?
+	i) this annotation ensures that you will not create second method inside the interface
+	ii) important purpose of this annotation is when a program use "reflection" and implement the interface
+
+usually, in source code, we are implementing the interface
+	but it is possible to read the annotation by a program to understand whether it is a functional interface or not
+
+@FunctionalInterface  
+interface sayable{  
+    void say(String msg);   // abstract method  
+    // It can contain any number of Object class methods.  
+    int hashCode();  
+    String toString();  
+    boolean equals(Object obj);  
+}  
+public class FunctionalInterfaceExample2 implements sayable{  
+    public void say(String msg){  
+        System.out.println(msg);  
+    }  
+}
+
+---------------------------static method ref---------------------
+
+interface Person
+{
+	void speak();
+}
+
+class Student	// does not implements Person
+{
+	public static void talk()
+	{
+		System.out.println("Student speaks");
+	}
+}
+
+public class MethodRef2 {
+
+	public static void main(String[] args) {
+		Person rama=Student::talk;
+		rama.speak();
+
+	}
+}
+---------------------------instance method ref-----------------
+interface Person
+{
+	void speak();
+}
+
+class Student	// does not implements Person
+{
+	public void talk()
+	{
+		System.out.println("Student speaks");
+	}
+}
+
+public class MethodRef2 {
+
+	public static void main(String[] args) {
+		Student siva=new Student();
+		Person rama=siva::talk;
+		rama.speak();
+
+	}
+}
+-----------------------------------------------------------
+Task:
+create a program to demonstrate Java 8 method reference using Functional interface
+
+------------------------------------
+Do you remember in multi threading we learnt 2 strategies:
+1) A class that extends Thread
+	in that case, we create object of Thread and call start method.
+	Nothing to discuss about that now
+
+2) A class that implements runnable 
+	class MyRunnable implements Runnable
+	{
+		public void run(){}
+	}
+
+	Thread t1=new Thread(new MyRunnable());
+
+Now: In Java 8,
+
+	class MyClass		//note that this class does not implement Runnable interface
+	{
+		public static void anyMethod()
+		{
+			//code....
+		}
+	}
+
+	Thread t1=new Thread(MyClass::anyMethod);
+
+---------------------------------------------------------
+Java 8 Method ref
+package model;
+
+import java.util.function.BiFunction;
+
+interface Person
+{
+	void speak();
+}
+
+class Student	//implements Person
+{
+	public void talk()
+	{
+		System.out.println("Student talks");
+	}
+	public void talk(int x)
+	{
+		System.out.println(x);
+	}
+	public void speak()
+	{
+		System.out.println("Speaking");
+	}
+	public static int sum(int i, int j)
+	{
+		return i+j;
+	}
+}
+
+public class MethodRef2 {
+
+	public static void main(String[] args) {
+		BiFunction<Integer, Integer, Integer> fn=Student::sum;
+		int result=fn.apply(2,3);
+		System.out.println(result);
+	}
+
+}
+
+-------------------------------------
+
+Java 8 Stream API
+-----------------
+	is used on collections
+	filtering
+	sorting	based on one or more fields
+	grouping and aggregate	(SUM, MIN, MAX)
+
+
+	suppose, if there is an array list	colleges
+		colleges.stream();
+
+	this stream() method can be used on any collection
+
+	Stream sounds like cascading or like a river
+
+	result of one stream method, returns another stream and that another stream method returns another stream
+
+
+		List<String> countries=new ArrayList<String>();
+		countries.add("India");
+		countries.add("Australia");
+		countries.add("Sri lanka");
+		countries.add("Pakistan");
+		countries.add("Japan");
+		countries.add("China");
+		countries.add("Bangladesh");
+		countries.add("Zimbabwe");
+		countries.add("Tanzania");
+		countries.add("Afghanistan");
+		
+		Stream<String> stream = countries.stream();
+//		stream=stream.filter(new MyPredicate());
+		stream=stream.filter((x)->x.length()<=5);
+		stream.forEach((x)->System.out.println(x));
+
+it can also be done as:
+		countries.stream().filter((x)->x.length()>5).forEach(System.out::println);
+
+or:
+		countries.stream()
+		.filter((x)->x.length()>5)
+		.forEach(System.out::println);
+
+multiple filters:
+		countries.stream()
+		.filter((x)->x.length()>5)
+		.filter((x)->!x.subSequence(0, 1).equals("A"))
+		.forEach(System.out::println);
+----------------------------------------------------------------------------
+
+Task:
+	create a java program with an arraylist of Integers.
+	Accept a number input from the user.
+	Display all the elements in the array list which is lesser than the input.
+
+	Note: 	use stream API
+
+
+Task:
+	Now that you have filtered the collection,
+	the new task is to sort the collection in descending order.
+
+	Note:	use sorted() method with comparator (lambda)
+
+
+Group by:
+	what is group by in SQL
+
+	Group by is useful for aggregate functions.	
+		aggregate functions produce 1 result per group
+		ex:		COUNT, MIN, MAX, SUM, AVG
+			COUNT()
+		whenever we use count function, we get only 1 result.	
+		Every aggregate function produces only 1 result.
+
+	But when you use group by, the aggregate function produces 1 result per group
+
+
+ex:
+List<Employee> employeeList=new ArrayList<Employee>();
+		Scanner sc=new Scanner(System.in);
+		int n=sc.nextInt();
+		for(int i=0;i<n;i++)
+		{
+			String detail=sc.nextLine();
+			if(detail.equals(""))
+				detail=sc.nextLine();
+			Employee employee=createEmployee(detail);
+			employeeList.add(employee);
+		}
+		Map<String, Long> result = employeeList.stream()
+		.collect(Collectors.groupingBy(Employee::getType, Collectors.counting()));
+		for(Entry<String, Long> e:result.entrySet())
+			System.out.println(e.getKey()+"\t:\t"+e.getValue());
+
+
+Task:
+	in document 11,
+	Requirement 6,
+		static Map<String,Long> calculateLocationCount(List<College> list)
+
+	Solve this problem using Stream API
+
+	static Map<String, Long> calculateLocationCount(List<College> list)
+	{
+		Map<String, Long> result = list.stream()
+		.collect(Collectors.groupingBy(College::getLocation,Collectors.counting()));
+		return result;
+	}
+
+
+---------
+In stream API
+	the groupingBy method produces a Map<K,V>
+	
+	there is another map method which is used to map (or) translate one form to another form
+
+	For ex:
+		there is a collection of college. So if we collect or use ForEach on the college list, we get list of college only.	But rather, we can map the college object to a String (specific field) or transform by manipulation like length, etc
+
+
+public class StreamDemo4 {
+	public static Employee createEmployee(String detail)
+	{
+		String[] arr = detail.split(",");
+		Integer employeeId=Integer.valueOf(arr[0]);
+		String name=arr[1];
+		String type=arr[2];
+		Employee employee=new Employee(employeeId, name, type);
+		return employee;
+	}
+	public static void main(String[] args) {
+		List<Employee> employeeList=new ArrayList<Employee>();
+		Scanner sc=new Scanner(System.in);
+		int n=sc.nextInt();
+		for(int i=0;i<n;i++)
+		{
+			String detail=sc.nextLine();
+			if(detail.equals(""))
+				detail=sc.nextLine();
+			Employee employee=createEmployee(detail);
+			employeeList.add(employee);
+		}
+		
+		employeeList.stream()
+		.map((x)->x.getEmployeeId()+"\t"+x.getName().toUpperCase())
+		.forEach(System.out::println);
+	}
+}
+
+
+Reminder:
+	Priority queue using comparator
+package mphasis;
+
+import java.util.PriorityQueue;
+
+class Student
+{
+	private Integer id;
+	private String name;
+	private Integer mark;
+	public Student() {}
+	public Student(Integer id, String name, Integer mark) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.mark = mark;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Integer getMark() {
+		return mark;
+	}
+	public void setMark(Integer mark) {
+		this.mark = mark;
+	}
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", name=" + name + ", mark=" + mark + "]";
+	}
+	
+}
+public class PriorityQueueDemo {
+
+	public static void main(String[] args) {
+		PriorityQueue<Student> students=new PriorityQueue<>((s2,s1)->s1.getMark().compareTo(s2.getMark()));
+		students.add(new Student(45, "Raja", 89));
+		students.add(new Student(145, "Abdul", 100));
+		students.add(new Student(514, "Rajesh", 90));
+		students.add(new Student(52, "Siva", 45));
+		students.add(new Student(25, "Krishna", 54));
+		students.add(new Student(53, "John", 80));
+		students.add(new Student(35, "Jag", 59));
+		students.add(new Student(533, "Dinesh", 70));
+		
+		for(Student s:students)
+			System.out.println(s);
+	}
+
+}
+
+---------------------------------------------------------
+Priority queue prioritize the elements only when removing
+
+Queue is required only when something is pending
+
+if the request is serviced, then it is removed from the queue.
+So priority queue removes the element in an order
+
+------------
+How to find the age based on 2 dates?
+
+today:	02-Mar-2021
+bd:	31-Dec-2020	
+
+31-Dec-2021		1year
+
+1 year old
+
+months=(year2-year1)*12	
+months+=(month2-month1)
+
+12=(2021-2020)*12
+-9=(03-12)
+
+total months=12+-9	=(3 months)
+
+day2-day1
+2-31
+-29
+
+to find month from days
+	
+
+365.25	days in a year
+THIS IS NOT REQUIRED NOW
+
+Java 8 provides 
+Solution for this
+
+Break out session task:
+Overview and Limitations of Previous
+API
+• The Date/Time API (JSR 310)
+• Creating and Working with
+LocalDate/LocalTime/LocalDateTime
+Instances
+• Formatting Date/Time
+• Localization / Time Zones
+• Periods and Durations
+• Performing Calculations on Data/Time
+types
+Parallel Processing and Concurrency
